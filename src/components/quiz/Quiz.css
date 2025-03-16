@@ -1,7 +1,6 @@
 .container {
   width: 512px;
-  margin: auto;
-  margin-top: 15px;
+  margin: 15px auto;
   background: #fff;
   color: #262626;
 

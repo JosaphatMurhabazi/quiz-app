@@ -42,6 +42,14 @@ const Quiz = () => {
     }
   };
 
+  const reset = () => {
+    setIndex(0);
+    setQuestion(data[0]);
+    setScore(0);
+    setLock(false);
+    setResult(false);
+  };
+
   const next = () => {
     if (islock) {
       if (index === data.length - 1) {
@@ -50,7 +58,7 @@ const Quiz = () => {
       }
       setIndex((prev) => {
         const newIndex = prev + 1;
-          setQuestion(data[newIndex])
+        setQuestion(data[newIndex]);
         return newIndex;
       });
       setLock(false);
@@ -66,27 +74,38 @@ const Quiz = () => {
     <div className="container">
       <h1>Quiz App</h1>
       <hr />
-      <h2>
-        {index + 1}. {question.question}
-      </h2>
-      <ul>
-        <li ref={option1} onClick={(e) => checkAnswer(e, 1)}>
-          {question.option1}
-        </li>
-        <li ref={option2} onClick={(e) => checkAnswer(e, 2)}>
-          {question.option2}
-        </li>
-        <li ref={option3} onClick={(e) => checkAnswer(e, 3)}>
-          {question.option3}
-        </li>
-        <li ref={option4} onClick={(e) => checkAnswer(e, 4)}>
-          {question.option4}
-        </li>
-      </ul>
-      <button onClick={next}>Next</button>
-      <div className="index">
-        {index + 1} of {data.length} questions
-      </div>
+      {isResult ? (
+        <>
+          <h2>
+            Your scored {score} out of {data.length}
+          </h2>
+          <button onClick={reset}>Rest</button>
+        </>
+      ) : (
+        <>
+          <h2>
+            {index + 1}. {question.question}
+          </h2>
+          <ul>
+            <li ref={option1} onClick={(e) => checkAnswer(e, 1)}>
+              {question.option1}
+            </li>
+            <li ref={option2} onClick={(e) => checkAnswer(e, 2)}>
+              {question.option2}
+            </li>
+            <li ref={option3} onClick={(e) => checkAnswer(e, 3)}>
+              {question.option3}
+            </li>
+            <li ref={option4} onClick={(e) => checkAnswer(e, 4)}>
+              {question.option4}
+            </li>
+          </ul>
+          <button onClick={next}>Next</button>
+          <div className="index">
+            {index + 1} of {data.length} questions
+          </div>
+        </>
+      )}
     </div>
   );
 };
