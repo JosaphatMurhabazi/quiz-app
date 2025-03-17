@@ -39,7 +39,7 @@ cd quiz-app
 3. Install dependencies:
 
 ```bash
-npm instal
+npm install
 ```
 
 4. Start the development server:
