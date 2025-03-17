@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Quiz.css';
 import Question, { data } from '../../assets/data';
 
@@ -8,6 +8,10 @@ const Quiz = () => {
   const [islock, setLock] = useState(false);
   const [score, setScore] = useState(0);
   const [isResult, setResult] = useState(false);
+
+  useEffect(() => {
+    setQuestion(data[index]);
+  }, [index]);
 
   const option1 = useRef<HTMLLIElement | null>(null);
   const option2 = useRef<HTMLLIElement | null>(null);
@@ -21,52 +25,46 @@ const Quiz = () => {
     option4,
   ];
 
+  const resetOptionsStyles = () => {
+    options.forEach((option) => {
+      option.current?.classList.remove('wrong');
+      option.current?.classList.remove('correct');
+    });
+  };
+
   const checkAnswer = (e: React.MouseEvent, ans: number) => {
-    if (!islock) {
-      const target = e.target as HTMLLIElement;
+    if (islock) return;
+    const target = e.target as HTMLLIElement;
 
-      if (question.ans === ans) {
-        if (target.classList) target.classList.add('correct');
-
-        setLock(true);
-        setScore((prev) => prev + 1);
-      } else {
-        if (target.classList) target.classList.add('wrong');
-
-        setLock(true);
-
-        const optionSelected = options[question.ans - 1];
-        if (optionSelected?.current)
-          optionSelected.current?.classList.add('correct');
-      }
+    if (question.ans === ans) {
+      target.classList?.add('correct');
+      setScore((prev) => prev + 1);
+    } else {
+      target.classList.add('wrong');
+      options[question.ans - 1]?.current?.classList.add('correct');
     }
+
+    setLock(true);
   };
 
   const reset = () => {
     setIndex(0);
-    setQuestion(data[0]);
     setScore(0);
     setLock(false);
     setResult(false);
+    resetOptionsStyles();
   };
 
   const next = () => {
     if (islock) {
       if (index === data.length - 1) {
         setResult(true);
-        return 0;
+      } else {
+        setIndex((prev) => prev + 1);
+        resetOptionsStyles();
       }
-      setIndex((prev) => {
-        const newIndex = prev + 1;
-        setQuestion(data[newIndex]);
-        return newIndex;
-      });
+
       setLock(false);
-      options.map((option) => {
-        option.current?.classList.remove('wrong');
-        option.current?.classList.remove('correct');
-        return 0;
-      });
     }
   };
 
@@ -79,7 +77,7 @@ const Quiz = () => {
           <h2>
             Your scored {score} out of {data.length}
           </h2>
-          <button onClick={reset}>Rest</button>
+          <button onClick={reset}>Reset</button>
         </>
       ) : (
         <>
@@ -87,16 +85,16 @@ const Quiz = () => {
             {index + 1}. {question.question}
           </h2>
           <ul>
-            <li ref={option1} onClick={(e) => checkAnswer(e, 1)}>
+            <li role="button" ref={option1} onClick={(e) => checkAnswer(e, 1)}>
               {question.option1}
             </li>
-            <li ref={option2} onClick={(e) => checkAnswer(e, 2)}>
+            <li role="button" ref={option2} onClick={(e) => checkAnswer(e, 2)}>
               {question.option2}
             </li>
-            <li ref={option3} onClick={(e) => checkAnswer(e, 3)}>
+            <li role="button" ref={option3} onClick={(e) => checkAnswer(e, 3)}>
               {question.option3}
             </li>
-            <li ref={option4} onClick={(e) => checkAnswer(e, 4)}>
+            <li role="button" ref={option4} onClick={(e) => checkAnswer(e, 4)}>
               {question.option4}
             </li>
           </ul>
